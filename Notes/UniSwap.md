@@ -13,3 +13,19 @@
 在 Uniswap 里对某个交易对（pair) 第一次添加流动性的人，可以任意对交易对的价格进行定价，即 x、y 和 k 都是这个人定的。创世流动性之后再添加 dx 和 dy，如果按系统默认值去添加，**都会受 dx/dy=x/y 的约束**。添加流动性后，Uniswap 会给用户返回一个 erc20 代币，这就是 LP Token。
 
 **LP Token 的总量是变化的**，添加流动性就会铸造新的 LP Token，即**增发**，而**赎回流动性则会销毁 LP Token**。
+
+## UniSwap 中的 K 值的设计
+
+Uniswap 里第一个人添加 x 个 ETH 和 y 个 USDT 的作为流动性时，决定了 K 值的初始大小，即 K=x*y。
+
+添加完流动性后，ETH 的价格就等于 =y(USDT 的数量)/x(ETH 的数量)。如果这个价格和其他交易所之间有价差，那肯定会被人搬砖套利。
+
+所谓的恒定乘积算法，指的是在流动性池没有再添加或减少流动性的情况下，只有交易行为发生的情况下，K 值是不变的。
+
+但是，由于交易费的存在，其实 K 值并不是恒定的：
+
+用户使用 Uniswap 交易时，需要交 0.3% 的手续费。比如用户拿 dy 个 usdt 买 ETH，Uniswap 会首先扣除 0.3%dy 的手续费，先将这 0.3%dy 的手续费丢在一边，完成交易后，这 0.3%dy 会被添加到流动性池里，此时 K 值就变成了 x*(y+0.3%dy)。
+
+## UniSwap 的 code review
+
+![](https://img.chainnews.com/material/images/809e4ba409f2586983b765945ff2aada_9QDzBys.jpg-article)
